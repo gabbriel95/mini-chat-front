@@ -1,11 +1,7 @@
 import { getAllUsers } from "@/services/userService";
 import React, { useState, useEffect } from "react";
 
-export const UserList = ({
-  onSelectUser,
-}: {
-  onSelectUser: (id: string) => void;
-}) => {
+export const UserList = () => {
   const [users, setUsers] = useState<{ id: string; fullName: string }[]>([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -15,6 +11,7 @@ export const UserList = ({
         const data = await getAllUsers();
         setUsers(data);
       } catch (err) {
+        setError(err as string);
         setError("Error al obtener usuarios");
       }
     }
@@ -32,10 +29,7 @@ export const UserList = ({
       <ul className="space-y-2">
         {users.map((user) => (
           <li key={user.id}>
-            <button
-              onClick={() => onSelectUser(user.id)}
-              className="flex items-center w-full p-3 rounded-lg hover:bg-gray-100 transition"
-            >
+            <button className="flex items-center w-full p-3 rounded-lg hover:bg-gray-100 transition">
               <div className="w-10 h-10 flex items-center justify-center rounded-full bg-green-500 text-white font-bold text-lg">
                 {user.fullName.charAt(0).toUpperCase()}
               </div>
