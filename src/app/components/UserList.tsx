@@ -15,7 +15,6 @@ export const UserList = ({
         const data = await getAllUsers();
         setUsers(data);
       } catch (err) {
-        setError(err as string);
         setError("Error al obtener usuarios");
       }
     }
@@ -24,17 +23,26 @@ export const UserList = ({
   }, []);
 
   if (error) {
-    return <p>{error}</p>;
+    return <p className="text-red-500">{error}</p>;
   }
 
   return (
-    <div>
-      <h3>Selecciona un usuario para chatear:</h3>
-      <ul>
+    <div className="w-full max-w-md mx-auto p-4 bg-white rounded shadow-md">
+      <h3 className="text-xl font-bold mb-4">Contactos</h3>
+      <ul className="space-y-2">
         {users.map((user) => (
           <li key={user.id}>
-            <button onClick={() => onSelectUser(user.id)}>
-              {user.fullName}
+            <button
+              onClick={() => onSelectUser(user.id)}
+              className="flex items-center w-full p-3 rounded-lg hover:bg-gray-100 transition"
+            >
+              <div className="w-10 h-10 flex items-center justify-center rounded-full bg-green-500 text-white font-bold text-lg">
+                {user.fullName.charAt(0).toUpperCase()}
+              </div>
+              <div className="ml-3 text-left">
+                <p className="font-medium">{user.fullName}</p>
+                <p className="text-sm text-gray-500">Toca para chatear</p>
+              </div>
             </button>
           </li>
         ))}

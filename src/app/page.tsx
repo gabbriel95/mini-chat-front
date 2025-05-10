@@ -6,20 +6,28 @@ import { ChatComponent } from "./components/ChatComponent";
 import { useAuthStore } from "./stores/auth/authStore";
 
 export default function HomePage() {
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(null); // ID del usuario seleccionado
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const user = useAuthStore((state) => state.user);
 
   const currentUserId = user?.id;
 
   return (
-    <div>
-      {!selectedUserId ? (
-        // Muestra la lista de usuarios si no se seleccionó ningún usuario
+    <div className="flex h-screen">
+      {/* Sidebar */}
+      <div className="w-1/4 border-r border-gray-300 bg-white">
         <UserList onSelectUser={(id) => setSelectedUserId(id)} />
-      ) : (
-        // Muestra el componente de chat si hay un usuario seleccionado
-        <ChatComponent currentUserId={currentUserId as string} />
-      )}
+      </div>
+
+      {/* Chat */}
+      <div className="flex-1">
+        {currentUserId ? (
+          <ChatComponent currentUserId={currentUserId} />
+        ) : (
+          <div className="flex items-center justify-center h-full text-gray-500">
+            Cargando...
+          </div>
+        )}
+      </div>
     </div>
   );
 }
