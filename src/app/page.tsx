@@ -1,15 +1,22 @@
 "use client";
 
-import { useAuthStore } from "./stores/auth/authStore";
+import React, { useState } from "react";
+import { UserList } from "./components/UserList";
+import { ChatComponent } from "./components/ChatComponent";
 
 export default function Home() {
-  const user = useAuthStore((state) => state.user);
+  const [targetUserId, setTargetUserId] = useState<string | null>(null);
 
   return (
     <div>
-      <h1>Bienvenido, {user?.fullName}</h1>
-      <p>Rol: {user?.roles.join(", ")}</p>
-      <p>Email: {user?.email}</p>
+      {!targetUserId ? (
+        <UserList onSelectUser={(id) => setTargetUserId(id)} />
+      ) : (
+        <ChatComponent
+          targetUserId={targetUserId}
+          onBack={() => setTargetUserId(null)}
+        />
+      )}
     </div>
   );
 }
