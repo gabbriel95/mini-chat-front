@@ -1,76 +1,72 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
+import { io, Socket } from "socket.io-client";
 
 interface ChatComponentProps {
-  targetUserId: string; // ID del usuario con el que se está chateando
-  onBack: () => void; // Función para volver a la lista de usuarios
+  currentUserId: string; // ID del usuario actual
 }
 
 export const ChatComponent: React.FC<ChatComponentProps> = ({
-  targetUserId,
-  onBack,
+  currentUserId,
 }) => {
-  const [messages, setMessages] = useState<{ from: string; content: string }[]>(
-    []
-  );
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const [messages, setMessages] = useState<
+    { userId: string; mensaje: string }[]
+  >([]);
   const [newMessage, setNewMessage] = useState("");
 
   useEffect(() => {
-    // Aquí podrías conectar a un WebSocket o cargar mensajes previos para el chat
-    console.log(`Conectando al chat con el usuario ${targetUserId}`);
-  }, [targetUserId]);
+    const socketConnection = io("http://localhost:3000"); // Cambia la URL según tu configuración
+    setSocket(socketConnection);
+
+    // Escuchar mensajes globales
+    socketConnection.on(
+      "mensaje_global",
+      (data: { userId: string; mensaje: string }) => {
+        setMessages((prevMessages) => [...prevMessages, data]); // Agregar mensaje a la lista
+      }
+    );
+
+    return () => {
+      socketConnection.disconnect(); // Desconectar al desmontar el componente
+    };
+  }, []);
 
   const sendMessage = () => {
-    if (newMessage.trim()) {
-      // Agregar el nuevo mensaje al estado local
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { from: "me", content: newMessage },
-      ]);
-      setNewMessage("");
-
-      // Aquí podrías enviar el mensaje al servidor o por WebSocket
-      console.log(`Enviando mensaje al usuario ${targetUserId}: ${newMessage}`);
+    if (socket && newMessage.trim() !== "") {
+      // Emitir el mensaje global
+      socket.emit("mensaje_global", {
+        userId: currentUserId,
+        mensaje: newMessage,
+      });
+      setNewMessage(""); // Limpiar el campo de texto
     }
   };
 
   return (
     <div>
-      <button onClick={onBack}>Volver</button>
-      <h3>Chat con el usuario {targetUserId}</h3>
-
       <div
         style={{
-          border: "1px solid #ccc",
+          border: "1px solid black",
           padding: "10px",
           height: "300px",
           overflowY: "scroll",
         }}
       >
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            style={{ textAlign: message.from === "me" ? "right" : "left" }}
-          >
-            <p>
-              <strong>{message.from === "me" ? "Yo" : "Ellos"}:</strong>{" "}
-              {message.content}
-            </p>
-          </div>
+        {messages.map((msg, index) => (
+          <p key={index}>
+            <strong>Usuario {msg.userId}:</strong> {msg.mensaje}
+          </p>
         ))}
       </div>
-
-      <div style={{ marginTop: "10px" }}>
-        <input
-          type="text"
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="Escribe tu mensaje..."
-          style={{ width: "80%", padding: "5px" }}
-        />
-        <button onClick={sendMessage} style={{ padding: "5px 10px" }}>
-          Enviar
-        </button>
-      </div>
+      <input
+        type="text"
+        value={newMessage}
+        onChange={(e) => setNewMessage(e.target.value)}
+        placeholder="Escribe un mensaje..."
+      />
+      <button onClick={sendMessage}>Enviar</button>
     </div>
   );
 };
