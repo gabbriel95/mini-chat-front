@@ -2,8 +2,8 @@
 
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/app/stores/auth/authStore";
+import { login } from "../../services/authApi";
 
 type FormData = {
   email: string;
@@ -13,30 +13,16 @@ type FormData = {
 export default function LoginForm() {
   const { register, handleSubmit } = useForm<FormData>();
   const [error, setError] = useState("");
-  const router = useRouter();
   const setUser = useAuthStore((state) => state.setUser);
 
   const onSubmit = async (data: FormData) => {
     try {
-      const res = await fetch("http://localhost:3000/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      const result = await login(data);
 
-      if (!res.ok) throw new Error("Login fallido");
-
-      const result = await res.json();
-
-      // Guardar el token en localStorage
       localStorage.setItem("token", result.token);
-
-      // Podés guardar el usuario también si querés:
-      // localStorage.setItem('user', JSON.stringify(result))
       setUser(result);
-      router.push("/");
     } catch (err) {
-      setError(err as string);
+      console.error("Error de inicio de sesión:", err);
       setError("Correo o contraseña incorrectos");
     }
   };

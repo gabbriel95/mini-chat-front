@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:3000/auth";
+const API_BASE_URL = "http://localhost:3000/users";
 
 // Obtener todos los usuarios
 export async function getAllUsers() {

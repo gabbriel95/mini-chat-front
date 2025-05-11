@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/app/stores/auth/authStore";
+import { registerUser } from "../../services/authApi";
 
-export default function RegisterPage() {
-  const router = useRouter();
+export default function NewAccountForm() {
   const setUser = useAuthStore((state) => state.setUser);
 
   const [form, setForm] = useState({
@@ -27,21 +26,11 @@ export default function RegisterPage() {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:3000/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
-      });
-
-      if (!res.ok) throw new Error("Registro fallido");
-
-      const data = await res.json();
+      const data = await registerUser(form);
+      localStorage.setItem("token", data.token);
       setUser(data);
-      router.push("/");
     } catch (err) {
-      setError(err as string);
+      console.error("Error al registrar el usuario:", err);
       setError("No se pudo registrar el usuario");
     }
   };
@@ -72,7 +61,7 @@ export default function RegisterPage() {
         <input
           type="text"
           name="username"
-          placeholder="user name"
+          placeholder="User name"
           value={form.username}
           onChange={handleChange}
           required
