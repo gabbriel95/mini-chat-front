@@ -1,14 +1,22 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { UserList } from "./components/UserList";
 import { ChatComponent } from "./components/ChatComponent";
 import { useAuthStore } from "../store/auth/authStore";
+import { useRouter } from 'next/navigation'
 
 export default function HomePage() {
   const user = useAuthStore((state) => state.user);
+  const router = useRouter();
 
   const currentUserId = user?.id;
+
+  useEffect(() => {
+    if (!user) {
+      router.push('/auth/login');
+    }
+  }, [user, router]);
 
   return (
     <div className="flex h-screen">
