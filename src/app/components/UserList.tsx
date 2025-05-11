@@ -1,4 +1,4 @@
-import { getAllUsers } from "@/services/userService";
+import { getAllUsers } from "@/app/api/userService";
 import React, { useState, useEffect } from "react";
 
 export const UserList = () => {

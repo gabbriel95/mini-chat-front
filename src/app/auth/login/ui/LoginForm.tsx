@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useAuthStore } from "@/app/stores/auth/authStore";
-import { login } from "../../services/authApi";
+import { login } from "../../../api/authApi";
 
 type FormData = {
   email: string;

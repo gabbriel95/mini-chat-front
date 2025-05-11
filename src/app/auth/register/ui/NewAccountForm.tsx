@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useAuthStore } from "@/app/stores/auth/authStore";
-import { registerUser } from "../../services/authApi";
+import { registerUser } from "../../../api/authApi";
 
 export default function NewAccountForm() {
   const setUser = useAuthStore((state) => state.setUser);
