@@ -27,7 +27,6 @@ export default function RegisterForm() {
 
     try {
       const data = await registerUser(form);
-      localStorage.setItem("token", data.token);
       setUser(data);
     } catch (err) {
       console.error("Error al registrar el usuario:", err);

@@ -12,12 +12,10 @@ export default function HomePage() {
 
   return (
     <div className="flex h-screen">
-      {/* Sidebar */}
       <div className="w-1/4 border-r border-gray-300 bg-white">
         <UserList />
       </div>
 
-      {/* Chat */}
       <div className="flex-1">
         {currentUserId ? (
           <ChatComponent

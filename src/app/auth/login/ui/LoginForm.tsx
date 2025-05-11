@@ -18,8 +18,6 @@ export default function LoginForm() {
   const onSubmit = async (data: FormData) => {
     try {
       const result = await login(data);
-
-      localStorage.setItem("token", result.token);
       setUser(result);
     } catch (err) {
       console.error("Error de inicio de sesión:", err);

@@ -1,4 +1,3 @@
-// stores/authStore.ts
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -7,7 +6,7 @@ interface User {
   email: string;
   fullName: string;
   roles: string[];
-  token: string;
+  token: string; // solo vive en memoria, no se guarda
 }
 
 interface AuthState {
@@ -24,8 +23,18 @@ export const useAuthStore = create<AuthState>()(
       logout: () => set({ user: null }),
     }),
     {
-      name: "auth-storage", // nombre en localStorage
-      partialize: (state) => ({ user: state.user }), // qué guardar
+      name: "auth-storage",
+      partialize: (state) => ({
+        user: state.user
+          ? {
+              id: state.user.id,
+              email: state.user.email,
+              fullName: state.user.fullName,
+              roles: state.user.roles,
+              // token no se guarda
+            }
+          : null,
+      }),
     }
   )
 );
