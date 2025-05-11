@@ -1,5 +1,5 @@
-import NewAccountForm from "./ui/NewAccountForm";
+import RegisterForm from "./ui/RegisterForm";
 
 export default function RegisterPage() {
-  return <NewAccountForm />;
+  return <RegisterForm />;
 }

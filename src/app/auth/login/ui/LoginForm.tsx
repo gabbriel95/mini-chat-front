@@ -59,7 +59,7 @@ export default function LoginForm() {
         </button>
         <p className="text-sm text-center mt-4">
           ¿No tenés cuenta?{" "}
-          <a href="/auth/new-account" className="text-blue-500 underline">
+          <a href="/auth/register" className="text-blue-500 underline">
             Crear cuenta
           </a>
         </p>
