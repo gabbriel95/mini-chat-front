@@ -1,7 +1,7 @@
 "use client";
 
 import { redirect } from "next/navigation";
-import { useAuthStore } from "../stores/auth/authStore";
+import { useAuthStore } from "../../store/auth/authStore";
 
 export default function AuthLayout({
   children,

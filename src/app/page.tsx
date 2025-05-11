@@ -3,7 +3,7 @@
 import React from "react";
 import { UserList } from "./components/UserList";
 import { ChatComponent } from "./components/ChatComponent";
-import { useAuthStore } from "./stores/auth/authStore";
+import { useAuthStore } from "../store/auth/authStore";
 
 export default function HomePage() {
   const user = useAuthStore((state) => state.user);

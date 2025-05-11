@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useAuthStore } from "@/app/stores/auth/authStore";
+import { useAuthStore } from "@/store/auth/authStore";
 import { registerUser } from "../../../api/authApi";
 
 export default function RegisterForm() {
@@ -98,7 +98,6 @@ export default function RegisterForm() {
 
           {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
 
-          {/* Botón "Ya tienes cuenta" */}
           <p className="text-sm text-center mt-4">
             ¿Ya tienes cuenta?{" "}
             <a href="/auth/login" className="text-blue-500 underline">
