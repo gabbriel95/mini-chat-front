@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
-import { io, Socket } from "socket.io-client";
+import { Socket } from "socket.io-client";
 
 interface ChatComponentProps {
+  socket: Socket | null;
   currentUserId: string;
   currentFullName: string;
 }
 
 export const ChatComponent: React.FC<ChatComponentProps> = ({
+  socket,
   currentUserId,
   currentFullName,
 }) => {
-  const [socket, setSocket] = useState<Socket | null>(null);
   const [messages, setMessages] = useState<
     { userId: string; mensaje: string; fullName: string }[]
   >([]);
@@ -18,17 +19,22 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const socketConnection = io("http://localhost:3000");
-    setSocket(socketConnection);
+    if (!socket) return;
 
-    socketConnection.on("mensaje_global", (data) => {
+    const handleMessage = (data: {
+      userId: string;
+      mensaje: string;
+      fullName: string;
+    }) => {
       setMessages((prev) => [...prev, data]);
-    });
+    };
+
+    socket.on("mensaje_global", handleMessage);
 
     return () => {
-      socketConnection.disconnect();
+      socket.off("mensaje_global", handleMessage);
     };
-  }, []);
+  }, [socket]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
