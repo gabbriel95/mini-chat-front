@@ -1,13 +1,23 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { UserList } from "../components/UserList";
 import { ChatComponent } from "../components/ChatComponent";
 import { useAuthStore } from "../../store/auth/authStore";
 import { useRouter } from "next/navigation";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:3000");
+interface User {
+  id: string;
+  userId: string;
+  fullName: string;
+}
 
 export default function HomePage() {
   const user = useAuthStore((state) => state.user);
+  const [users, setUsers] = useState<User[]>([]);
+
   const router = useRouter();
 
   const currentUserId = user?.id;
@@ -18,10 +28,29 @@ export default function HomePage() {
     }
   }, [user, router]);
 
+  useEffect(() => {
+    if (!user) return;
+
+    const currentUser = {
+      userId: user.id,
+      fullName: user.fullName,
+    };
+
+    socket.emit("set-user", currentUser);
+
+    socket.on("clients-updated", (connectedUsers: User[]) => {
+      setUsers(connectedUsers);
+    });
+
+    return () => {
+      socket.off("clients-updated");
+    };
+  }, [user]);
+
   return (
     <div className="flex h-screen">
       <div className="w-1/4 border-r border-gray-300 bg-white">
-        <UserList />
+        <UserList users={users} />
       </div>
 
       <div className="flex-1">

@@ -1,39 +1,14 @@
-"use client";
-import { useAuthStore } from "@/store/auth/authStore";
-import React, { useEffect, useState } from "react";
-import { io } from "socket.io-client";
-
-const socket = io("http://localhost:3000");
-
 interface User {
   id: string;
   userId: string;
   fullName: string;
 }
 
-export const UserList = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const authUser = useAuthStore((state) => state.user); // Obtenés el user del store
+interface UserListProps {
+  users: User[];
+}
 
-  useEffect(() => {
-    if (!authUser) return;
-
-    const currentUser = {
-      userId: authUser.id,
-      fullName: authUser.fullName,
-    };
-
-    socket.emit("set-user", currentUser);
-
-    socket.on("clients-updated", (connectedUsers: User[]) => {
-      setUsers(connectedUsers);
-    });
-
-    return () => {
-      socket.off("clients-updated");
-    };
-  }, [authUser]);
-
+export const UserList = ({ users }: UserListProps) => {
   return (
     <div className="w-full max-w-md mx-auto p-4 bg-white rounded shadow-md">
       <h3 className="text-xl font-bold mb-4">Usuarios conectados</h3>
