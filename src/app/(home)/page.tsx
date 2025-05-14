@@ -41,7 +41,7 @@ export default function HomePage() {
     return () => {
       disconnectSocketListeners();
     };
-  }, [user]);
+  }, []);
 
   return (
     <div className="flex h-screen">
