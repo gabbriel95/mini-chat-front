@@ -1,3 +1,4 @@
+import { User } from "@/interfaces/user.interface";
 import React, { useState, useEffect, useRef } from "react";
 import { Socket } from "socket.io-client";
 
@@ -5,12 +6,14 @@ interface ChatComponentProps {
   socket: Socket | null;
   currentUserId: string;
   currentFullName: string;
+  toUser: User;
 }
 
 export const ChatComponent: React.FC<ChatComponentProps> = ({
   socket,
   currentUserId,
   currentFullName,
+  toUser,
 }) => {
   const [messages, setMessages] = useState<
     { userId: string; mensaje: string; fullName: string }[]
@@ -53,6 +56,15 @@ export const ChatComponent: React.FC<ChatComponentProps> = ({
 
   return (
     <div className="flex flex-col h-full bg-white">
+      <div className="flex items-center gap-2 bg-green-500 text-white px-4 py-3 shadow-md">
+        <div className="w-10 h-10 bg-white text-green-500 flex items-center justify-center rounded-full font-bold">
+          {toUser.fullName.charAt(0).toUpperCase()}
+        </div>
+        <div className="flex flex-col">
+          <span className="font-semibold text-sm">{toUser.fullName}</span>
+          <span className="text-xs opacity-80">En línea</span>
+        </div>
+      </div>
       <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-gray-100">
         {messages.map((msg, index) => {
           const isOwnMessage = msg.userId === currentUserId;

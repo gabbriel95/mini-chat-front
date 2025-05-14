@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { UserList } from "../components/UserList";
 import { ChatComponent } from "../components/ChatComponent";
 import { useAuthStore } from "../../store/auth/authStore";
@@ -21,6 +21,7 @@ interface User {
 export default function HomePage() {
   const user = useAuthStore((state) => state.user);
   const [users, setUsers] = useState<User[]>([]);
+  const [userFriend, setUserFriend] = useState<User | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -43,22 +44,27 @@ export default function HomePage() {
     };
   }, []);
 
+  const friendSelected = useCallback((userFriend: User) => {
+    setUserFriend(userFriend);
+  }, []);
+
   return (
     <div className="flex h-screen">
       <div className="w-1/4 border-r border-gray-300 bg-white">
-        <UserList users={users} />
+        <UserList users={users} friendSelected={friendSelected} />
       </div>
 
       <div className="flex-1">
-        {user ? (
+        {userFriend ? (
           <ChatComponent
             socket={getSocket()}
-            currentUserId={user.id}
-            currentFullName={user.fullName}
+            currentUserId={user!.id}
+            currentFullName={user!.fullName}
+            toUser={userFriend!}
           />
         ) : (
           <div className="flex items-center justify-center h-full text-gray-500">
-            Cargando...
+            Seleccione un contacto para enviarle mensajes
           </div>
         )}
       </div>

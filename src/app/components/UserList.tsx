@@ -6,16 +6,20 @@ interface User {
 
 interface UserListProps {
   users: User[];
+  friendSelected: (user: User) => void;
 }
 
-export const UserList = ({ users }: UserListProps) => {
+export const UserList = ({ users, friendSelected }: UserListProps) => {
   return (
     <div className="w-full max-w-md mx-auto p-4 bg-white rounded shadow-md">
       <h3 className="text-xl font-bold mb-4">Usuarios conectados</h3>
       <ul className="space-y-2">
         {users.map((user) => (
           <li key={user.id}>
-            <button className="flex items-center w-full p-3 rounded-lg hover:bg-gray-100 transition">
+            <button
+              className="flex items-center w-full p-3 rounded-lg hover:bg-gray-100 transition"
+              onClick={() => friendSelected(user)}
+            >
               <div className="w-10 h-10 flex items-center justify-center rounded-full bg-green-500 text-white font-bold text-lg">
                 {user.fullName.charAt(0)}
               </div>
