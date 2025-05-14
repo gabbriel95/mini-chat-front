@@ -5,7 +5,7 @@ let socket: Socket | null = null;
 
 export const connectSocket = (userId: string, fullName: string): Socket => {
   if (!socket) {
-    socket = io("http://localhost:3000");
+    socket = io(process.env.NEXT_PUBLIC_API_URL);
   }
 
   socket.emit("set-user", { userId, fullName });
